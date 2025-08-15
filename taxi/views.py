@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views import generic, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -102,22 +102,21 @@ class DriverDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("taxi:driver-list")
 
 
-class DriverUpdateView(LoginRequiredMixin, generic.UpdateView):
-    model = Driver
-    fields = "__all__"
-    success_url = reverse_lazy("taxi:driver-list")
+# class DriverUpdateView(LoginRequiredMixin, generic.UpdateView):
+#     model = Driver
+#     fields = "__all__"
+#     success_url = reverse_lazy("taxi:driver-list")
 
 
 class LicenseNumberUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Driver
     form_class = DriverLicenseUpdateForm
 
-    def form_invalid(self, form):
-        print(form.errors)
-        return super().form_invalid(form)
-
     def get_success_url(self):
-        return reverse("taxi:driver-detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy(
+            "taxi:driver-detail",
+            kwargs={"pk": self.object.pk}
+        )
 
 
 class RemoveDriverFromCarView(LoginRequiredMixin, View):
