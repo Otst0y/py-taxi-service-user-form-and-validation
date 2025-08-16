@@ -29,7 +29,7 @@ class LicenseNumberMixin():
 
 class DriverCreationForm(LicenseNumberMixin, UserCreationForm):
     class Meta:
-        model = Driver
+        model = get_user_model()
         fields = UserCreationForm.Meta.fields + (
             "license_number",
         )
@@ -37,7 +37,7 @@ class DriverCreationForm(LicenseNumberMixin, UserCreationForm):
 
 class DriverLicenseUpdateForm(LicenseNumberMixin, forms.ModelForm):
     class Meta:
-        model = Driver
+        model = get_user_model()
         fields = ("license_number",)
 
 

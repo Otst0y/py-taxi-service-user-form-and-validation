@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -92,24 +93,25 @@ class DriverDetailView(LoginRequiredMixin, generic.DetailView):
 
 
 class DriverCreateView(LoginRequiredMixin, generic.CreateView):
-    model = Driver
+    model = get_user_model()
     form_class = DriverCreationForm
     success_url = reverse_lazy("taxi:driver-list")
 
 
 class DriverDeleteView(LoginRequiredMixin, generic.DeleteView):
-    model = Driver
+    model = get_user_model()
     success_url = reverse_lazy("taxi:driver-list")
 
-
-# class DriverUpdateView(LoginRequiredMixin, generic.UpdateView):
-#     model = Driver
-#     fields = "__all__"
-#     success_url = reverse_lazy("taxi:driver-list")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["fallback_url"] = self.request.META.get(
+            "HTTP_REFERER", self.success_url
+        )
+        return context
 
 
 class LicenseNumberUpdateView(LoginRequiredMixin, generic.UpdateView):
-    model = Driver
+    model = get_user_model()
     form_class = DriverLicenseUpdateForm
 
     def get_success_url(self):
